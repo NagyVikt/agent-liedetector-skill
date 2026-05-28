@@ -103,7 +103,34 @@ Idempotent — safe to re-run. The CLAUDE.md modifications are wrapped in `<!-- 
 
 A short alias is registered too: `npx liedetector install` does the same thing.
 
-### Option 2 — manual copy
+### Option 2 — universal (works with 51+ agents)
+
+If you use [Cursor](https://cursor.com), [Codex](https://github.com/openai/codex), [Cline](https://github.com/cline/cline), [Gemini CLI](https://github.com/google-gemini/gemini-cli), [Aider](https://aider.chat), [GitHub Copilot](https://github.com/features/copilot), [Windsurf](https://windsurf.com), [Roo](https://roocode.com), [OpenCode](https://opencode.ai), or any of the other 51+ agents in the [skills.sh](https://skills.sh) ecosystem, use the universal installer:
+
+```bash
+npx skills add NagyVikt/agent-liedetector-skill
+```
+
+The [`skills` CLI](https://skills.sh) auto-detects which coding agent you have installed and drops `SKILL.md` into the right directory for that agent. No need to know paths.
+
+**Common variants:**
+
+```bash
+# install to a specific agent (or several at once)
+npx skills add NagyVikt/agent-liedetector-skill -a cursor
+npx skills add NagyVikt/agent-liedetector-skill -a claude-code -a codex -a cursor
+
+# install to every agent it detects on your machine
+npx skills add NagyVikt/agent-liedetector-skill --all
+
+# install globally (~/<agent>/skills/) instead of into the current project
+npx skills add NagyVikt/agent-liedetector-skill -g
+
+# CI/CD-friendly, no prompts
+npx skills add NagyVikt/agent-liedetector-skill -a claude-code -g -y
+```
+
+### Option 3 — manual copy
 
 If you don't want to run a script, just copy `SKILL.md` into your agent's skill directory:
 
@@ -116,7 +143,7 @@ If you don't want to run a script, just copy `SKILL.md` into your agent's skill 
 | Gemini CLI | `~/.gemini/skills/liedetector/SKILL.md` |
 | GitHub Copilot | Append to `.github/copilot-instructions.md` |
 
-### Option 3 — via cue profile
+### Option 4 — via cue profile
 
 If you use [cue / cuecards](https://github.com/opencue/cuecards), add to any profile:
 
