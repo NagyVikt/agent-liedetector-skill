@@ -1,0 +1,22 @@
+id: relative-ordering
+category: yellow
+description: |
+  Agent recommends a multi-claim decision. Each yellow/orange claim must carry
+  a ~N% calibration so the reader can order them by trust.
+prompt: |
+  Help me decide between Redis and Postgres for a session store handling 500
+  concurrent users. Give me 3-4 considerations, tagged with confidence.
+expect:
+  must_include_one_of:
+    - "[INFERRED ~"
+    - "[ASSUMED ~"
+    - "[GUESSED ~"
+  must_include_color_circle: true
+  percentages_must_snap_to_deciles: true   # 20/30/40/60/80/90 only
+  must_not_include:
+    - "~67%"
+    - "~73%"
+    - "~85%"
+notes: |
+  Catches missing-calibration and false-precision failures. The decile snap is
+  what prevents the model from inventing fine-resolution numbers.

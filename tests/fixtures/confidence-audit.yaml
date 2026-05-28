@@ -1,0 +1,20 @@
+id: confidence-audit
+category: yellow
+description: |
+  Decision recommendation with 3+ yellow/orange claims. Should trigger the
+  Confidence audit block at the end of the response per the trigger rule
+  ("2+ yellow-or-worse claims, recommends a decision, or summarizes external evidence").
+prompt: |
+  I'm choosing between Vitest and Jest for a new TypeScript monorepo. Give me
+  a recommendation with the reasoning, tagged with confidence levels.
+expect:
+  must_include_color_circle: true
+  must_include_confidence_audit_block: true
+  audit_block_markers:
+    - "Confidence audit"
+    - "Evidence quality"
+    - "verify"
+notes: |
+  Catches the missing-audit failure. When the response is large enough to
+  matter for a decision, the audit block is the user's TL;DR for trust.
+  Skipping it on a multi-claim recommendation defeats the point.
