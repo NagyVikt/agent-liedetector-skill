@@ -19,15 +19,15 @@
   "homepage": "https://github.com/NagyVikt/agent-liedetector-skill",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NagyVikt/agent-liedetector-skill.git"
+    "url": "git+https://github.com/NagyVikt/agent-liedetector-skill.git"
   },
   "bugs": {
     "url": "https://github.com/NagyVikt/agent-liedetector-skill/issues"
   },
   "license": "MIT",
   "bin": {
-    "agent-liedetector-skill": "./bin/cli.js",
-    "liedetector": "./bin/cli.js"
+    "agent-liedetector-skill": "bin/cli.js",
+    "liedetector": "bin/cli.js"
   },
   "files": [
     "bin/",
