@@ -1,6 +1,6 @@
 {
   "name": "agent-liedetector-skill",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A confidence-calibration skill for any AI coding agent. Tags every claim 🟢 [VERIFIED] / 🟡 [INFERRED ~80%] / 🟠 [GUESSED ~30%] / 🔴 [UNKNOWN] so you can scan how much to trust each line.",
   "keywords": [
     "ai",

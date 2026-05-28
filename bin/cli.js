@@ -69,7 +69,7 @@ function claudeMdBlock(skillBody) {
     "",
     "## Integrity Protocol (agent-liedetector-skill)",
     "",
-    "Applies to every response. Skip the percentage and full audit on trivial requests (one-line fixes, simple lookups).",
+    "Applies to every research- or decision-relevant response. Skip the protocol entirely on trivial requests (one-line fixes, simple lookups, casual conversation) per the \"When NOT to use\" rules below. When you do tag, the ~N% on yellow and orange is required, not optional.",
     "",
     stripped,
     "",

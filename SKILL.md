@@ -3,7 +3,7 @@ name: liedetector
 description: "🟢🟡🟠🔴 confidence tags + ~N% calibration on every claim. Use when user wants the agent to verify claims, flag uncertainty, stop fabricating, or asks \"how sure are you\"."
 tags: [meta, calibration, integrity, anti-hallucination, claude-code, codex, cursor]
 license: MIT
-version: 0.2.0
+version: 0.2.1
 ---
 
 # 🕵️ Agent Lie Detector
@@ -55,9 +55,9 @@ Apply to every research- or decision-relevant claim. Always prefix with the colo
 |---|---|
 | 🔴 `[UNKNOWN]` | Outside reliable knowledge. Refusing to fabricate. Hand off to a search or to the user. |
 
-## Optional ~N% calibration
+## ~N% calibration (required on yellow and orange)
 
-On yellow and orange tags, append a decile-snapped estimate to indicate position within the tier:
+Every yellow and orange tag **must** carry a decile-snapped `~N%` estimate indicating position within the tier. A bare `[INFERRED]` or `[ASSUMED]` is a protocol violation. The calibration is what makes the tags scannable for relative trust.
 
 - 🟡 `[INFERRED ~80%]`, leans high within yellow
 - 🟡 `[ASSUMED ~50%]`, neutral within yellow
@@ -65,9 +65,12 @@ On yellow and orange tags, append a decile-snapped estimate to indicate position
 
 Rules:
 
+- Yellow tags must use one of: `~50%`, `~60%`, `~70%`, `~80%`, `~90%`.
+- Orange tags must use one of: `~20%`, `~30%`, `~40%`.
 - Snap to deciles (20 / 30 / 40 / 60 / 80 / 90). Never `~67%` or `~73%` (false precision).
 - Always prefix `~` to signal estimate.
-- Skip on green and red. The tier already says it.
+- **Skip only on green and red.** Green is by definition ≥90%, red is by definition ≤10%, the tier name already conveys the level.
+- If you can't pick a percent, you're using the wrong tier. Downgrade to one where the percent range fits.
 - The number is meaningful as **relative ordering** across claims in the same response, not as a calibrated absolute probability. LLM self-reported probabilities are notoriously miscalibrated in absolute terms, but ordering across same-response claims is reliable.
 
 ## Picking the right tag
