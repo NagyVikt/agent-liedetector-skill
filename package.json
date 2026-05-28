@@ -1,0 +1,42 @@
+{
+  "name": "agent-liedetector-skill",
+  "version": "0.1.0",
+  "description": "A confidence-calibration skill for any AI coding agent. Tags every claim 🟢 [VERIFIED] / 🟡 [INFERRED ~80%] / 🟠 [GUESSED ~30%] / 🔴 [UNKNOWN] so you can scan how much to trust each line.",
+  "keywords": [
+    "ai",
+    "agent",
+    "skill",
+    "claude",
+    "claude-code",
+    "codex",
+    "cursor",
+    "calibration",
+    "hallucination",
+    "uncertainty",
+    "integrity",
+    "lie-detector"
+  ],
+  "homepage": "https://github.com/NagyVikt/agent-liedetector-skill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NagyVikt/agent-liedetector-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NagyVikt/agent-liedetector-skill/issues"
+  },
+  "license": "MIT",
+  "bin": {
+    "agent-liedetector-skill": "./bin/cli.js",
+    "liedetector": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "preferGlobal": false
+}
