@@ -3,7 +3,7 @@ name: liedetector
 description: "🟢🟡🟠🔴 confidence tags + ~N% calibration on every claim. Use when user wants the agent to verify claims, flag uncertainty, stop fabricating, or asks \"how sure are you\"."
 tags: [meta, calibration, integrity, anti-hallucination, claude-code, codex, cursor]
 license: MIT
-version: 0.2.1
+version: 0.3.0
 ---
 
 # 🕵️ Agent Lie Detector
@@ -32,7 +32,7 @@ Apply to every research- or decision-relevant claim. Always prefix with the colo
 
 | Tag | Meaning |
 |---|---|
-| 🟢 `[VERIFIED]` | I checked the source firsthand this session. Read the code, ran the test, opened the spec. |
+| 🟢 `[VERIFIED]` | I checked the source firsthand this session. Read the code, ran the test, opened the spec. **Cite the evidence inline** (`file:line`, the command, or the one output line that proves it) so the reader confirms at a glance. No citable evidence means it is not VERIFIED, so downgrade it. |
 | 🟢 `[KNOWN]` | Well-documented public fact from training data. RFCs, language specs, mainstream library APIs. |
 
 ### 🟡 Yellow, reasonable, verify if stakes matter (~50–85%)
@@ -107,6 +107,8 @@ Rules:
 - If the original claim was a `[VERIFIED]`, downgrade your trust-floor across the rest of that thread. One wrong "verified" means the verification process is leaky.
 - A correction is not failure. Hidden errors are failure. Visible corrections are how trust gets earned back.
 
+Log corrections over time to test whether the tiers are calibrated (does a `~80%` claim hold ~80% of the time?): `references/calibration-scoreboard.md` plus `scripts/calibration-log.sh`.
+
 ## Confidence audit on big responses
 
 Triggered when the response (a) contains 2+ yellow-or-worse claims, (b) recommends a decision the user will act on, or (c) summarizes external evidence. End with:
@@ -128,6 +130,22 @@ Before sending any response that uses these tags, run one mental pass:
 4. Did you skip a `[CORRECTION]` you owed from earlier in the conversation? File it now.
 
 The self-check turns the protocol from a **generation** rule into a **review** rule. Single biggest lever against grade inflation.
+
+## External verification (high-stakes claims)
+
+Self-checking is fragile: the model that made the claim shares the priors and blind spots of the model grading it. For claims that are decision-critical and hard to reverse, escalate to an independent verifier instead of trusting your own pass.
+
+The loop, in three parts:
+
+1. **Author** states the claims (this session).
+2. **Verifier**: spawn a fresh-context sub-agent, ideally a *different model*, given the claims as neutral assertions to audit (PASS / FAIL / PARTIAL + evidence). Never tell it the answer you expect.
+3. **Adjudicate** every disagreement against ground-truth files or commands yourself. The verifier is allowed to be wrong; its job is to surface disagreements cheaply, not to be the final authority. Trusting it blindly just swaps one fragile authority for another.
+
+Reserve this for expensive-to-get-wrong claims, since it costs an extra model call. Everything else rides on inline-evidence `[VERIFIED]`. Run it in one step with the `/verify` command (`resources/commands/verify.md`).
+
+References:
+- `references/external-verification.md`: full protocol, triage gate, verification-command discipline (e.g. never `grep -rh` across files when file identity matters).
+- `references/cross-vendor-verify.md`: route the audit to a different vendor (codex / gemini via acpx) for genuine independence on the highest-stakes claims.
 
 ## Anti-patterns
 
@@ -196,3 +214,7 @@ If your agent isn't listed, paste the `SKILL.md` content into whatever the agent
 > - One thing to verify externally before acting: rebuild a test profile from scratch and confirm no orphan symlinks remain.
 
 The %s don't claim calibrated probability. They say "in this response, trust the 80% claim more than the 70%, and both more than the 40%." That ordering is the actual signal.
+
+## Evals
+
+Scenarios that measure whether the protocol tags correctly (grade-inflation, false premise, over-tagging, missing `~N%`) live in `evals/eval-set.json`, with the rubric and run steps in `evals/scenarios.md`. Run them with one command via `scripts/run-evals.sh`: no args prints the prompts to paste, `--responses <file>` grades an offline capture, `--cmd '<template with {{PROMPT}}>'` generates responses through any model (e.g. acpx to another vendor) then grades. Mechanical grading is a smoke test (5/6 threshold); eyeball the two heuristic scenarios near the line. An optional, opt-in Stop hook (`resources/hooks/liedetector-tag-density.*`) nudges when a long response carries zero tags or tag-spam.

@@ -19,6 +19,12 @@ const readline = require("node:readline");
 const PKG_ROOT = path.resolve(__dirname, "..");
 const SKILL_SRC = path.join(PKG_ROOT, "SKILL.md");
 
+// Support material SKILL.md links to (references/, scripts/, evals/, and the
+// resources/ verify-command + tag-density hook). Copied alongside SKILL.md so
+// the v0.3.0 external-verification / evals links resolve in an install, not
+// just when browsing the repo. Only dirs that exist in the package are copied.
+const SUPPORT_DIRS = ["references", "scripts", "evals", "resources"];
+
 const CLAUDE_HOME = path.join(os.homedir(), ".claude");
 const SKILL_TARGET_DIR = path.join(CLAUDE_HOME, "skills", "liedetector");
 const SKILL_TARGET = path.join(SKILL_TARGET_DIR, "SKILL.md");
@@ -92,6 +98,20 @@ async function cmdInstall(opts) {
     ensureDir(SKILL_TARGET_DIR);
     fs.writeFileSync(SKILL_TARGET, skillBody);
     ok(`skill installed → ${c.dim(SKILL_TARGET)}`);
+  }
+
+  // 1b. Install support material (references/, scripts/, evals/, resources/)
+  // so SKILL.md's links resolve in the installed skill dir.
+  for (const dir of SUPPORT_DIRS) {
+    const src = path.join(PKG_ROOT, dir);
+    if (!fs.existsSync(src)) continue;
+    const dest = path.join(SKILL_TARGET_DIR, dir);
+    if (opts.dryRun) {
+      log(c.dim("would copy: ") + dest + path.sep);
+    } else {
+      fs.cpSync(src, dest, { recursive: true });
+      ok(`${dir}/ installed → ${c.dim(dest)}`);
+    }
   }
 
   // 2. Optionally append the always-on block to ~/.claude/CLAUDE.md.
